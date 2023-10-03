@@ -1,4 +1,4 @@
-Simple search tool for the data in JSONL from Offene Register
+Simple search tool for the data in JSONL format from Offene Register
 ===============
 
 Goes through a JSONL file and searches for given terms in the name of the company and the attributes of the officers of the company.
@@ -15,4 +15,4 @@ Run the tests
 
 ```
 python3 tests.py
-```l
+```
