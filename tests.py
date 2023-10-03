@@ -47,12 +47,16 @@ class Test(unittest.TestCase):
                                     "retrieved_at": "2018-12-23T09:05:00Z"
                                 }
         self.in_data = StringIO(json.dumps(self.test_data_struct))
+        #redirect the output to be able to check it, to avoid other workarounds or changing the code
         self.out = StringIO()
         sys.stdout = self.out
+        #the files exists, but the the dictionary is easier to change for tests
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
+        self.searcher.jsonl_db.close()
         self.searcher.jsonl_db = self.in_data
 
     def tearDown(self):
+        #direct the output back to the default
         sys.stdout = sys.__stdout__
         self.out = None
 
