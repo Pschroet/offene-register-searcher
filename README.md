@@ -10,3 +10,9 @@ python3 query_offeneregister.py -j jsonl_file_location [-a/--alterms] search_ter
 ```
 
 -a/--allterms will make the script only return a set of data, if all terms appear in a set
+
+Run the tests
+
+```
+python3 tests.py
+```l
