@@ -63,7 +63,7 @@ class Test(unittest.TestCase):
     def testFindCompanyNamePos(self):
         self.searcher.search(terms=["Muster"])
         output = self.out.getvalue()
-        assert output != ""
+        assert output != "" and "Error" not in output
 
     def testFindCompanyNameNeg(self):
         self.searcher.search(terms=["Moster"])
@@ -73,7 +73,7 @@ class Test(unittest.TestCase):
     def testFindCompanyNameTwoTermsPos(self):
         self.searcher.search(terms=["Muster", "Co KG"], allterms=True)
         output = self.out.getvalue()
-        assert output != ""
+        assert output != "" and "Error" not in output
 
     def testFindCompanyNameTwoTermsNeg(self):
         self.searcher.search(terms=["Muster", "GmbH"], allterms=True)
