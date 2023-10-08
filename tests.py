@@ -1,7 +1,7 @@
-import json
 import register_searcher
 import sys
 import unittest
+from json import dumps, JSONDecodeError
 from io import StringIO
 
 test_data_struct = {
@@ -44,10 +44,13 @@ test_data_struct = {
                     "retrieved_at": "2018-12-23T09:05:00Z"
                    }
 
+false_data_struct = "{'single': 'quote'}"
+
 class Test(unittest.TestCase):
 
     def setUp(self):
         self.in_data = StringIO(dumps(test_data_struct))
+        self.false_in_data = StringIO(false_data_struct)
         #redirect the output to be able to check it, to avoid other workarounds or changing the code
         self.out = StringIO()
         sys.stdout = self.out
@@ -80,6 +83,20 @@ class Test(unittest.TestCase):
         self.searcher.search(terms=["Muster", "GmbH"], allterms=True)
         output = self.out.getvalue()
         assert output == ""
+
+    def testFindCompanyNameFalseDataException(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=False)
+        self.searcher.jsonl_db.close()
+        self.searcher.jsonl_db = self.false_in_data
+        self.assertRaises(JSONDecodeError, self.searcher.search, {"terms": ["Muster"]})
+
+    def testFindCompanyNameFalseDataIgnoreException(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
+        self.searcher.jsonl_db.close()
+        self.searcher.jsonl_db = self.false_in_data
+        self.searcher.search(terms=["Muster"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" in output
         
 if __name__ == "__main__":
     unittest.main()
