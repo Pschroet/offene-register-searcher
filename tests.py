@@ -84,6 +84,16 @@ class Test(unittest.TestCase):
         output = self.out.getvalue()
         assert output == ""
 
+    def testFindCompanyNameTwoTermsOneInc(self):
+        self.searcher.search(terms=["Muster", "GmbH"], allterms=False)
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testFindCompanyNameTwoTermsNoneInc(self):
+        self.searcher.search(terms=["Moster", "GmbH"], allterms=False)
+        output = self.out.getvalue()
+        assert output == ""
+
     def testFindCompanyNameFalseDataException(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=False)
         self.searcher.jsonl_db.close()
