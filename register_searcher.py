@@ -49,3 +49,8 @@ class Register_Searcher(object):
                             print(str(e))
                         else:
                             raise
+            else:
+                if not any(terms): print("No terms given")
+                if not any(self.jsonl_db): print("File is empty")
+        elif self.jsonl_db is None:
+            print("No JSONL file set")

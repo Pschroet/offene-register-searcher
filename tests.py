@@ -107,6 +107,28 @@ class Test(unittest.TestCase):
         self.searcher.search(terms=["Muster"])
         output = self.out.getvalue()
         assert output != "" and "Error" in output
-        
+
+    def testNoTermPassed(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
+        self.searcher.jsonl_db.close()
+        self.searcher.jsonl_db = self.false_in_data
+        self.searcher.search(terms=[])
+        output = self.out.getvalue()
+        assert "Error" not in output and "No terms given" in output
+
+    def testEmptyFilePassed(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
+        self.searcher.jsonl_db.close()
+        self.searcher.jsonl_db = StringIO("")
+        self.searcher.search(terms=["Empty"])
+        output = self.out.getvalue()
+        assert "Error" not in output and "File is empty" in output
+
+    def testNoFileSet(self):
+        self.searcher = register_searcher.Register_Searcher()
+        self.searcher.search(terms=["NoFile"])
+        output = self.out.getvalue()
+        assert "Error" not in output and "No JSONL file set" in output
+
 if __name__ == "__main__":
     unittest.main()
