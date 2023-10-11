@@ -64,43 +64,43 @@ class Test(unittest.TestCase):
         sys.stdout = sys.__stdout__
         self.out = None
 
-    def testFindCompanyNamePos(self):
+    def testJSONFindCompanyNamePos(self):
         self.searcher.search_json(terms=["Muster"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output
 
-    def testFindCompanyNameNeg(self):
+    def testJSONFindCompanyNameNeg(self):
         self.searcher.search_json(terms=["Moster"])
         output = self.out.getvalue()
         assert output == ""
 
-    def testFindCompanyNameTwoTermsPos(self):
+    def testJSONFindCompanyNameTwoTermsPos(self):
         self.searcher.search_json(terms=["Muster", "Co KG"], allterms=True)
         output = self.out.getvalue()
         assert output != "" and "Error" not in output
 
-    def testFindCompanyNameTwoTermsNeg(self):
+    def testJSONFindCompanyNameTwoTermsNeg(self):
         self.searcher.search_json(terms=["Muster", "GmbH"], allterms=True)
         output = self.out.getvalue()
         assert output == ""
 
-    def testFindCompanyNameTwoTermsOneInc(self):
+    def testJSONFindCompanyNameTwoTermsOneInc(self):
         self.searcher.search_json(terms=["Muster", "GmbH"], allterms=False)
         output = self.out.getvalue()
         assert output != "" and "Error" not in output
 
-    def testFindCompanyNameTwoTermsNoneInc(self):
+    def testJSONFindCompanyNameTwoTermsNoneInc(self):
         self.searcher.search_json(terms=["Moster", "GmbH"], allterms=False)
         output = self.out.getvalue()
         assert output == ""
 
-    def testFindCompanyNameFalseDataException(self):
+    def testJSONFindCompanyNameFalseDataException(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=False)
         self.searcher.jsonl_db.close()
         self.searcher.jsonl_db = self.false_in_data
         self.assertRaises(JSONDecodeError, self.searcher.search_json, {"terms": ["Muster"]})
 
-    def testFindCompanyNameFalseDataIgnoreException(self):
+    def testJSONFindCompanyNameFalseDataIgnoreException(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
         self.searcher.jsonl_db.close()
         self.searcher.jsonl_db = self.false_in_data
@@ -108,7 +108,7 @@ class Test(unittest.TestCase):
         output = self.out.getvalue()
         assert output != "" and "Error" in output
 
-    def testNoTermPassed(self):
+    def testJSONNoTermPassed(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
         self.searcher.jsonl_db.close()
         self.searcher.jsonl_db = self.false_in_data
@@ -116,7 +116,7 @@ class Test(unittest.TestCase):
         output = self.out.getvalue()
         assert "Error" not in output and "No terms given" in output
 
-    def testEmptyFilePassed(self):
+    def testJSONEmptyFilePassed(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
         self.searcher.jsonl_db.close()
         self.searcher.jsonl_db = StringIO("")
@@ -124,7 +124,7 @@ class Test(unittest.TestCase):
         output = self.out.getvalue()
         assert "Error" not in output and "File is empty" in output
 
-    def testNoFileSet(self):
+    def testJSONNoFileSet(self):
         self.searcher = register_searcher.Register_Searcher()
         self.searcher.search_json(terms=["NoFile"])
         output = self.out.getvalue()
