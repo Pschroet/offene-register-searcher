@@ -8,7 +8,7 @@ class Register_Searcher(object):
         self.read_line = 1
         self.ignore_exception = ignore_exception
 
-    def search(self, terms=[], allterms=False):
+    def search_json(self, terms=[], allterms=False):
         if self.jsonl_db is not None and hasattr(self.jsonl_db, "tell") and hasattr(self.jsonl_db, "seek"):
             #since the any function call in the second if will move the file pointer one position forwards, remember it and set it back
             ini_pos = self.jsonl_db.tell()

@@ -17,4 +17,4 @@ if __name__ == "__main__":
         else:
             print("Searching for terms " + str(args.terms) + " in database " + str(args.jsonl))
             reg_par = register_searcher.Register_Searcher(jsonl=args.jsonl)
-            reg_par.search(terms=args.terms, allterms=args.allterms)
+            reg_par.search_json(terms=args.terms, allterms=args.allterms)
