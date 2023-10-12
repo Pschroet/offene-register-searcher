@@ -130,5 +130,65 @@ class Test(unittest.TestCase):
         output = self.out.getvalue()
         assert "Error" not in output and "No JSONL file set" in output
 
+    def testStringFindCompanyNamePos(self):
+        self.searcher.search_string(terms=["Muster"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testStringFindCompanyNameNeg(self):
+        self.searcher.search_string(terms=["Moster"])
+        output = self.out.getvalue()
+        assert output == ""
+
+    def testStringFindCompanyNameTwoTermsPos(self):
+        self.searcher.search_string(terms=["Muster", "Co KG"], allterms=True)
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testStringFindCompanyNameTwoTermsNeg(self):
+        self.searcher.search_string(terms=["Muster", "GmbH"], allterms=True)
+        output = self.out.getvalue()
+        assert output == ""
+
+    def testStringFindCompanyNameTwoTermsOneInc(self):
+        self.searcher.search_string(terms=["Muster", "GmbH"], allterms=False)
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testStringFindCompanyNameTwoTermsNoneInc(self):
+        self.searcher.search_string(terms=["Moster", "GmbH"], allterms=False)
+        output = self.out.getvalue()
+        assert output == ""
+
+    def testStringFindCompanyNameFalseDataIgnoreException(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
+        self.searcher.jsonl_db.close()
+        self.searcher.jsonl_db = self.false_in_data
+        self.searcher.search_string(terms=["Muster"])
+        output = self.out.getvalue()
+        assert output == ""
+
+    def testStringNoTermPassed(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
+        self.searcher.jsonl_db.close()
+        self.searcher.jsonl_db = self.false_in_data
+        self.searcher.search_string(terms=[])
+        output = self.out.getvalue()
+        assert "Error" not in output and "No terms given" in output
+
+    def testStringEmptyFilePassed(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
+        self.searcher.jsonl_db.close()
+        self.searcher.jsonl_db = StringIO("")
+        self.searcher.search_string(terms=["Empty"])
+        output = self.out.getvalue()
+        assert "Error" not in output and "File is empty" in output
+
+    def testStringNoFileSet(self):
+        self.searcher = register_searcher.Register_Searcher()
+        self.searcher.search_string(terms=["NoFile"])
+        output = self.out.getvalue()
+        assert "Error" not in output and "No JSONL file set" in output
+
 if __name__ == "__main__":
     unittest.main()
