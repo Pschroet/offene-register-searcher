@@ -1,5 +1,6 @@
 import json
 import os
+import re
 
 class Register_Searcher(object):
 
@@ -67,6 +68,37 @@ class Register_Searcher(object):
                         term_found = True if t in entry else False
                         if not allterms and term_found:
                             print("Found term '" + str(t) + "' in line " + str(self.read_line) + ": " + str(entry))
+                            #exit loop, because one term has been found, which is enough
+                            break
+                        elif not term_found:
+                            allterms_found = False
+                            #all terms required, it's enough that one hasn't been found
+                            break
+                    if allterms and allterms_found:
+                        print("Found all terms " + str(terms) + " in line " + str(self.read_line) + ": " + str(entry))
+                    self.read_line += 1
+            else:
+                if not any(terms): print("No terms given")
+                if not any(self.jsonl_db): print("File is empty")
+        elif self.jsonl_db is None:
+            print("No JSONL file set")
+
+    def search_regex(self, terms=[], allterms=False, ignore_case=False):
+        if self.jsonl_db is not None and hasattr(self.jsonl_db, "tell") and hasattr(self.jsonl_db, "seek"):
+            #since the any function call in the second if will move the file pointer one position forwards, remember it and set it back
+            ini_pos = self.jsonl_db.tell()
+            if any(terms) and self.jsonl_db is not None and any(self.jsonl_db):
+                self.jsonl_db.seek(ini_pos)
+                terms_regexes = []
+                for term in terms:
+                    terms_regexes.append(re.compile("" + term + "", flags=0 if not ignore_case else re.IGNORECASE))
+                for entry in self.jsonl_db:
+                    allterms_found = True
+                    for tr in terms_regexes:
+                        #search returns the position of the first hit or None, so check if the return value is not None
+                        term_found = tr.search(entry) is not None
+                        if not allterms and term_found:
+                            print("Found term '" + str(tr) + "' in line " + str(self.read_line) + ": " + str(entry))
                             #exit loop, because one term has been found, which is enough
                             break
                         elif not term_found:

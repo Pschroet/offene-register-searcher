@@ -20,7 +20,7 @@ test_data_struct = {
                         "federal_state": "Musterstadt",
                         "native_company_number": "Musterstadt MUS 999999",
                         "registered_office": "Musterstadt",
-                        "registrar": "Musterstadt"
+                        "registrar": "Mesterstadt"
                     },
                     "company_number": "M1337M_MUS999999",
                     "current_status": "currently registered",
@@ -189,6 +189,83 @@ class Test(unittest.TestCase):
         self.searcher.search_string(terms=["NoFile"])
         output = self.out.getvalue()
         assert "Error" not in output and "No JSONL file set" in output
+
+    def testRegexFindCompanyNamePos(self):
+        self.searcher.search_regex(terms=["Muster"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testtestRegexFindCompanyNameNeg(self):
+        self.searcher.search_regex(terms=["Moster"])
+        output = self.out.getvalue()
+        assert output == ""
+
+    def testRegexFindCompanyNameTwoTermsPos(self):
+        self.searcher.search_regex(terms=["Muster", "Co KG"], allterms=True)
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testRegexFindCompanyNameTwoTermsNeg(self):
+        self.searcher.search_regex(terms=["Muster", "GmbH"], allterms=True)
+        output = self.out.getvalue()
+        assert output == ""
+
+    def testRegexFindCompanyNameTwoTermsOneInc(self):
+        self.searcher.search_regex(terms=["Muster", "GmbH"], allterms=False)
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testRegexFindCompanyNameTwoTermsNoneInc(self):
+        self.searcher.search_regex(terms=["Moster", "GmbH"], allterms=False)
+        output = self.out.getvalue()
+        assert output == ""
+
+    def testRegexFindCompanyNameFalseDataIgnoreException(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
+        self.searcher.jsonl_db.close()
+        self.searcher.jsonl_db = self.false_in_data
+        self.searcher.search_regex(terms=["Muster"])
+        output = self.out.getvalue()
+        assert output == ""
+
+    def testRegexNoTermPassed(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
+        self.searcher.jsonl_db.close()
+        self.searcher.jsonl_db = self.false_in_data
+        self.searcher.search_regex(terms=[])
+        output = self.out.getvalue()
+        assert "Error" not in output and "No terms given" in output
+
+    def testRegexEmptyFilePassed(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
+        self.searcher.jsonl_db.close()
+        self.searcher.jsonl_db = StringIO("")
+        self.searcher.search_regex(terms=["Empty"])
+        output = self.out.getvalue()
+        assert "Error" not in output and "File is empty" in output
+
+    def testRegexNoFileSet(self):
+        self.searcher = register_searcher.Register_Searcher()
+        self.searcher.search_regex(terms=["NoFile"])
+        output = self.out.getvalue()
+        assert "Error" not in output and "No JSONL file set" in output
+
+    def testRegexFindCompanyNameIgnoreCasePos(self):
+        self.searcher.search_regex(terms=["MUster"], ignore_case=True)
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testtestRegexFindCompanyNameCaseSensativeNeg(self):
+        #data contains 'Meisterstadt', which should not be found, if case is not ignored
+        self.searcher.search_regex(terms=["MEster"])
+        output = self.out.getvalue()
+        assert output == ""
+
+    def testtestRegexFindCityActualRegex(self):
+        #data contains 'Meisterstadt', which should not be found, if case is not ignored
+        self.searcher.search_regex(terms=["M.*stadt"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
 
 if __name__ == "__main__":
     unittest.main()
