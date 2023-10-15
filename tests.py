@@ -20,7 +20,7 @@ test_data_struct = {
                         "federal_state": "Musterstadt",
                         "native_company_number": "Musterstadt MUS 999999",
                         "registered_office": "Musterstadt",
-                        "registrar": "Mesterstadt"
+                        "registrar": "Meisterstadt"
                     },
                     "company_number": "M1337M_MUS999999",
                     "current_status": "currently registered",
@@ -261,11 +261,21 @@ class Test(unittest.TestCase):
         output = self.out.getvalue()
         assert output == ""
 
-    def testtestRegexFindCityActualRegex(self):
+    def testtestRegexFindCompanyNameCaseInsensativeNeg(self):
         #data contains 'Meisterstadt', which should not be found, if case is not ignored
+        self.searcher.search_regex(terms=["mEister"], ignore_case=True)
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testtestRegexFindCityActualRegex(self):
         self.searcher.search_regex(terms=["M.*stadt"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output
+
+    def testtestRegexFindCityActualRegexCaseSensitive(self):
+        self.searcher.search_regex(terms=["M1337m.*MUS999999"], ignore_case=False)
+        output = self.out.getvalue()
+        assert output == ""
 
 if __name__ == "__main__":
     unittest.main()
