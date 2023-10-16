@@ -17,9 +17,9 @@ test_data_struct = {
                             "UT": True,
                             "VÖ": False
                         },
-                        "federal_state": "Musterstadt",
+                        "federal_state": "Musterstadtland",
                         "native_company_number": "Musterstadt MUS 999999",
-                        "registered_office": "Musterstadt",
+                        "registered_office": "Musterstadt 1",
                         "registrar": "Meisterstadt"
                     },
                     "company_number": "M1337M_MUS999999",
@@ -129,6 +129,26 @@ class Test(unittest.TestCase):
         self.searcher.search_json(terms=["NoFile"])
         output = self.out.getvalue()
         assert "Error" not in output and "No JSONL file set" in output
+
+    def testJSONFindRegisteredAddress(self):
+        self.searcher.search_json(terms=["Musterstraße 1"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testJSONFindFederalState(self):
+        self.searcher.search_json(terms=["Musterstadtland"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testJSONFindRegisteredOffice(self):
+        self.searcher.search_json(terms=["Musterstadt 1"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testJSONFindRegistrar(self):
+        self.searcher.search_json(terms=["Meisterstadt"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
 
     def testStringFindCompanyNamePos(self):
         self.searcher.search_string(terms=["Muster"])

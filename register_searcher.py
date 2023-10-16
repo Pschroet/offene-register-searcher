@@ -21,7 +21,11 @@ class Register_Searcher(object):
                         entry_data = json.loads(entry)
                         for t in terms:
                             term_found = False
-                            if "name" in entry_data and t in entry_data["name"]:
+                            if (("name" in entry_data and t in entry_data["name"]) or
+                                ("registered_address" in entry_data and t in entry_data["registered_address"]) or
+                                ("all_attributes" in entry_data and "federal_state" in entry_data["all_attributes"] and t in entry_data["all_attributes"]["federal_state"]) or
+                                ("all_attributes" in entry_data and "registered_office" in entry_data["all_attributes"] and t in entry_data["all_attributes"]["registered_office"]) or
+                                ("all_attributes" in entry_data and "registrar" in entry_data["all_attributes"] and t in entry_data["all_attributes"]["registrar"])):
                                 term_found = True
                             elif "officers" in entry_data:
                                 for o in entry_data["officers"]:

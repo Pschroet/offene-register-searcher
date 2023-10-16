@@ -9,7 +9,7 @@ Usage
 python3 query_offeneregister.py -j/--jsonl jsonl_file_location [-a/--alterms] [-s/--stringsearch | -r/--regexsearch [-i/--ignorecase]] search_term [search_term ...]
 ```
 
-Default search method converts each entry from a JSON formatted string to a Python object and searches for the terms in the company name and attributes of the officers of the company.
+Default search method converts each entry from a JSON formatted string to a Python object and searches for the terms in the company name, the registered address, federal state, registered office, registrar, and attributes of the officers of the company.
 
 - -a/--allterms will make the script only return a set of data, if all terms appear in a set
 - -s/--stringsearch will treat each entry as string and search in there
