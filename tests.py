@@ -56,8 +56,8 @@ class Test(unittest.TestCase):
         sys.stdout = self.out
         #the files exists, but the the dictionary is easier to change for tests
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
-        self.searcher.jsonl_db.close()
-        self.searcher.jsonl_db = self.in_data
+        self.searcher._jsonl_db.close()
+        self.searcher._jsonl_db = self.in_data
 
     def tearDown(self):
         #direct the output back to the default
@@ -96,39 +96,39 @@ class Test(unittest.TestCase):
 
     def testJSONFindCompanyNameFalseDataException(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=False)
-        self.searcher.jsonl_db.close()
-        self.searcher.jsonl_db = self.false_in_data
+        self.searcher._jsonl_db.close()
+        self.searcher._jsonl_db = self.false_in_data
         self.assertRaises(JSONDecodeError, self.searcher.search_json, {"terms": ["Muster"]})
 
     def testJSONFindCompanyNameFalseDataIgnoreException(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
-        self.searcher.jsonl_db.close()
-        self.searcher.jsonl_db = self.false_in_data
+        self.searcher._jsonl_db.close()
+        self.searcher._jsonl_db = self.false_in_data
         self.searcher.search_json(terms=["Muster"])
         output = self.out.getvalue()
         assert output != "" and "Error" in output
 
     def testJSONNoTermPassed(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
-        self.searcher.jsonl_db.close()
-        self.searcher.jsonl_db = self.false_in_data
+        self.searcher._jsonl_db.close()
+        self.searcher._jsonl_db = self.false_in_data
         self.searcher.search_json(terms=[])
         output = self.out.getvalue()
         assert "Error" not in output and "No terms given" in output
 
     def testJSONEmptyFilePassed(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
-        self.searcher.jsonl_db.close()
-        self.searcher.jsonl_db = StringIO("")
+        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
+        self.searcher._jsonl_db.close()
+        self.searcher._jsonl_db = StringIO("")
         self.searcher.search_json(terms=["Empty"])
         output = self.out.getvalue()
-        assert "Error" not in output and "File is empty" in output
+        assert "Error" not in output and output == ""
 
     def testJSONNoFileSet(self):
         self.searcher = register_searcher.Register_Searcher()
         self.searcher.search_json(terms=["NoFile"])
         output = self.out.getvalue()
-        assert "Error" not in output and "No JSONL file set" in output
+        assert "Error" not in output and "File not set" in output
 
     def testJSONFindRegisteredAddress(self):
         self.searcher.search_json(terms=["Musterstraße 1"])
@@ -182,40 +182,40 @@ class Test(unittest.TestCase):
 
     def testStringFindCompanyNameFalseDataIgnoreException(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
-        self.searcher.jsonl_db.close()
-        self.searcher.jsonl_db = self.false_in_data
+        self.searcher._jsonl_db.close()
+        self.searcher._jsonl_db = self.false_in_data
         self.searcher.search_string(terms=["Muster"])
         output = self.out.getvalue()
         assert output == ""
 
     def testStringNoTermPassed(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
-        self.searcher.jsonl_db.close()
-        self.searcher.jsonl_db = self.false_in_data
+        self.searcher._jsonl_db.close()
+        self.searcher._jsonl_db = self.false_in_data
         self.searcher.search_string(terms=[])
         output = self.out.getvalue()
         assert "Error" not in output and "No terms given" in output
 
     def testStringEmptyFilePassed(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
-        self.searcher.jsonl_db.close()
-        self.searcher.jsonl_db = StringIO("")
+        self.searcher._jsonl_db.close()
+        self.searcher._jsonl_db = StringIO("")
         self.searcher.search_string(terms=["Empty"])
         output = self.out.getvalue()
-        assert "Error" not in output and "File is empty" in output
+        assert "Error" not in output and output == ""
 
     def testStringNoFileSet(self):
         self.searcher = register_searcher.Register_Searcher()
         self.searcher.search_string(terms=["NoFile"])
         output = self.out.getvalue()
-        assert "Error" not in output and "No JSONL file set" in output
+        assert "Error" not in output and "File not set" in output
 
     def testRegexFindCompanyNamePos(self):
         self.searcher.search_regex(terms=["Muster"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output
 
-    def testtestRegexFindCompanyNameNeg(self):
+    def testRegexFindCompanyNameNeg(self):
         self.searcher.search_regex(terms=["Moster"])
         output = self.out.getvalue()
         assert output == ""
@@ -242,60 +242,72 @@ class Test(unittest.TestCase):
 
     def testRegexFindCompanyNameFalseDataIgnoreException(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
-        self.searcher.jsonl_db.close()
-        self.searcher.jsonl_db = self.false_in_data
+        self.searcher._jsonl_db.close()
+        self.searcher._jsonl_db = self.false_in_data
         self.searcher.search_regex(terms=["Muster"])
         output = self.out.getvalue()
-        assert output == ""
+        assert "Error" not in output and output == ""
 
     def testRegexNoTermPassed(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
-        self.searcher.jsonl_db.close()
-        self.searcher.jsonl_db = self.false_in_data
+        self.searcher._jsonl_db.close()
+        self.searcher._jsonl_db = self.false_in_data
         self.searcher.search_regex(terms=[])
         output = self.out.getvalue()
         assert "Error" not in output and "No terms given" in output
 
     def testRegexEmptyFilePassed(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
-        self.searcher.jsonl_db.close()
-        self.searcher.jsonl_db = StringIO("")
+        self.searcher._jsonl_db.close()
+        self.searcher._jsonl_db = StringIO("")
         self.searcher.search_regex(terms=["Empty"])
         output = self.out.getvalue()
-        assert "Error" not in output and "File is empty" in output
+        assert "Error" not in output and output == ""
 
     def testRegexNoFileSet(self):
         self.searcher = register_searcher.Register_Searcher()
         self.searcher.search_regex(terms=["NoFile"])
         output = self.out.getvalue()
-        assert "Error" not in output and "No JSONL file set" in output
+        assert "Error" not in output and "File not set" in output
 
     def testRegexFindCompanyNameIgnoreCasePos(self):
         self.searcher.search_regex(terms=["MUster"], ignore_case=True)
         output = self.out.getvalue()
         assert output != "" and "Error" not in output
 
-    def testtestRegexFindCompanyNameCaseSensativeNeg(self):
+    def testRegexFindCompanyNameCaseSensativeNeg(self):
         #data contains 'Meisterstadt', which should not be found, if case is not ignored
         self.searcher.search_regex(terms=["MEster"])
         output = self.out.getvalue()
         assert output == ""
 
-    def testtestRegexFindCompanyNameCaseInsensativeNeg(self):
+    def testRegexFindCompanyNameCaseInsensativeNeg(self):
         #data contains 'Meisterstadt', which should not be found, if case is not ignored
         self.searcher.search_regex(terms=["mEister"], ignore_case=True)
         output = self.out.getvalue()
         assert output != "" and "Error" not in output
 
-    def testtestRegexFindCityActualRegex(self):
+    def testRegexFindCityActualRegex(self):
         self.searcher.search_regex(terms=["M.*stadt"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output
 
-    def testtestRegexFindCityActualRegexCaseSensitive(self):
+    def testRegexFindCityActualRegexCaseSensitive(self):
         self.searcher.search_regex(terms=["M1337m.*MUS999999"], ignore_case=False)
         output = self.out.getvalue()
         assert output == ""
+
+    def testFileSetNone(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl=None)
+        assert self.searcher._jsonl_db is None
+
+    def testFileSetNotExisting(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="")
+        assert self.searcher._jsonl_db is None
+
+    def testFileSetEmpty(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="empty.jsonl")
+        assert self.searcher._jsonl_db is None
 
 if __name__ == "__main__":
     unittest.main()
