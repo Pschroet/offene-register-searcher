@@ -4,12 +4,12 @@ import register_searcher
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
-    argparser.add_argument("terms", default=[], nargs="+", description="terms to search for in the data")
-    argparser.add_argument("-j", "--jsonl", required=True, action="store", default=None, description="file to serve as database")
-    argparser.add_argument("-a", "--allterms", action="store_true", default=False, required=False, description="line must contain all search terms")
-    argparser.add_argument("-s", "--stringsearch", action="store_true", default=False, required=False, description="search lines with string comparison")
-    argparser.add_argument("-r", "--regexsearch", action="store_true", default=False, required=False, description="search lines with regular expressions")
-    argparser.add_argument("-i", "--ignorecase", action="store_true", default=False, required=False, description="ignore cases, argument will be ignored if -r/--regexsearch is not active")
+    argparser.add_argument("terms", default=[], nargs="+", help="terms to search for in the data")
+    argparser.add_argument("-j", "--jsonl", required=True, action="store", default=None, help="file to serve as database")
+    argparser.add_argument("-a", "--allterms", action="store_true", default=False, required=False, help="line must contain all search terms")
+    argparser.add_argument("-s", "--stringsearch", action="store_true", default=False, required=False, help="search lines with string comparison")
+    argparser.add_argument("-r", "--regexsearch", action="store_true", default=False, required=False, help="search lines with regular expressions")
+    argparser.add_argument("-i", "--ignorecase", action="store_true", default=False, required=False, help="ignore cases, argument will be ignored if -r/--regexsearch is not active")
     args = argparser.parse_args()
     if not hasattr(args, "jsonl") or args.jsonl is None:
         print("argument jsonl file is missing, usage")
