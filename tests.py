@@ -1,3 +1,4 @@
+import os
 import register_searcher
 import sys
 import unittest
@@ -308,6 +309,72 @@ class Test(unittest.TestCase):
     def testFileSetEmpty(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="empty.jsonl")
         assert self.searcher._jsonl_db is None
+
+    def testOffsetJSONZero(self):
+        self.searcher.search_string(terms=["Muster"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testOffsetJSONTooFar(self):
+        self.searcher.search_string(terms=["Muster"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testOffsetJSONPos(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
+        self.searcher.search_string(terms=["Muster"])
+        output = self.out.getvalue()
+        assert "Error" not in output and output == ""
+
+    def testOffsetJSONNeg(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
+        self.searcher.search_string(terms=["Monster"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testOffsetStringZero(self):
+        self.searcher.search_json(terms=["Muster"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testOffsetStringTooFar(self):
+        self.searcher.search_json(terms=["Muster"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testOffsetStringPos(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
+        self.searcher.search_json(terms=["Muster"])
+        output = self.out.getvalue()
+        assert "Error" not in output and output == ""
+
+    def testOffsetStringNeg(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
+        self.searcher.search_json(terms=["Monster"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testOffsetRegexZero(self):
+        self.searcher.search_regex(terms=["Muster"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testOffsetRegexTooFar(self):
+        self.searcher.search_regex(terms=["Muster"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
+
+    def testOffsetRegexPos(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
+        self.searcher.search_regex(terms=["Muster"])
+        output = self.out.getvalue()
+        assert "Error" not in output and output == ""
+
+    def testOffsetRegexNeg(self):
+        self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
+        self.searcher.search_regex(terms=["Monster"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output
 
 if __name__ == "__main__":
     unittest.main()

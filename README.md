@@ -15,6 +15,7 @@ Default search method converts each entry from a JSON formatted string to a Pyth
 - -s/--stringsearch will treat each entry as string and search in there
 - -r/--regexsearch will convert the term(s) to regular expressions and use them to search the entries
 - -i/--ignorecase will make the regular expression case insensitive and is only used of -r/--regexsearch is active, otherwise has no effect
+- -o/--offset will jump over the given number of lines
 
 Run the tests
 

@@ -10,6 +10,7 @@ if __name__ == "__main__":
     argparser.add_argument("-s", "--stringsearch", action="store_true", default=False, required=False, help="search lines with string comparison")
     argparser.add_argument("-r", "--regexsearch", action="store_true", default=False, required=False, help="search lines with regular expressions")
     argparser.add_argument("-i", "--ignorecase", action="store_true", default=False, required=False, help="ignore cases, argument will be ignored if -r/--regexsearch is not active")
+    argparser.add_argument("-o", "--offset", required=False, action="store", type=int, default=0, help="offset for the file pointer")
     args = argparser.parse_args()
     if not hasattr(args, "jsonl") or args.jsonl is None:
         print("argument jsonl file is missing, usage")
@@ -19,7 +20,7 @@ if __name__ == "__main__":
             print("file " + str(args.jsonl) + " not found")
         else:
             print("Searching for terms " + str(args.terms) + " in database " + str(args.jsonl))
-            reg_par = register_searcher.Register_Searcher(jsonl=args.jsonl)
+            reg_par = register_searcher.Register_Searcher(jsonl=args.jsonl, offset=args.offset)
             if args.stringsearch: reg_par.search_string(terms=args.terms, allterms=args.allterms)
             elif args.regexsearch: reg_par.search_regex(terms=args.terms, allterms=args.allterms, ignore_case=args.ignorecase)
             else: reg_par.search_json(terms=args.terms, allterms=args.allterms)

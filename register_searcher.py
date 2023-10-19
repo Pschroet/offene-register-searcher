@@ -4,12 +4,12 @@ import re
 
 class Register_Searcher(object):
 
-    def __init__(self, jsonl=None, ignore_exception=False):
-        self.read_line = 1
+    def __init__(self, jsonl=None, ignore_exception=False, offset=0):
+        self.read_line = 1 if offset is None or offset < 1 else  offset
         self.ignore_exception = ignore_exception
-        self._jsonl_db = self.set_jsonl_file(jsonl_file=jsonl)
+        self._jsonl_db = self.set_jsonl_file(jsonl_file=jsonl, offset=offset)
 
-    def set_jsonl_file(self, jsonl_file=None):
+    def set_jsonl_file(self, jsonl_file=None, offset=0):
         if jsonl_file is not None and os.path.isfile(jsonl_file):
             jsonl_db = open(jsonl_file, mode="r")
             if jsonl_db is not None and hasattr(jsonl_db, "tell") and hasattr(jsonl_db, "seek"):
@@ -17,6 +17,9 @@ class Register_Searcher(object):
                 ini_pos = jsonl_db.tell()
                 if any(jsonl_db):
                     jsonl_db.seek(ini_pos)
+                    if offset is not None and offset > 0:
+                        for _ in range(0, offset):
+                            next(jsonl_db)
                     return jsonl_db
                 else:
                     print("File is empty")
