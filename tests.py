@@ -1,9 +1,9 @@
 import os
-import register_searcher
 import sys
 import unittest
-from json import dumps, JSONDecodeError
 from io import StringIO
+from json import dumps, JSONDecodeError
+from register_searcher import Compare_Mode, Register_Searcher
 
 test_data_struct = {
                     "all_attributes": {
@@ -56,7 +56,7 @@ class Test(unittest.TestCase):
         self.out = StringIO()
         sys.stdout = self.out
         #the files exists, but the the dictionary is easier to change for tests
-        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
+        self.searcher = Register_Searcher(jsonl="test.jsonl")
         self.searcher._jsonl_db.close()
         self.searcher._jsonl_db = self.in_data
 
@@ -66,313 +66,314 @@ class Test(unittest.TestCase):
         self.out = None
 
     def testJSONFindCompanyNamePos(self):
-        self.searcher.search_json(terms=["Muster"])
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Muster"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testJSONFindCompanyNameNeg(self):
-        self.searcher.search_json(terms=["Moster"])
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Moster"])
         output = self.out.getvalue()
         assert output == ""
 
     def testJSONFindCompanyNameTwoTermsPos(self):
-        self.searcher.search_json(terms=["Muster", "Co KG"], allterms=True)
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Muster", "Co KG"], allterms=True)
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found all terms" in output
 
     def testJSONFindCompanyNameTwoTermsNeg(self):
-        self.searcher.search_json(terms=["Muster", "GmbH"], allterms=True)
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Muster", "GmbH"], allterms=True)
         output = self.out.getvalue()
         assert output == ""
 
     def testJSONFindCompanyNameTwoTermsOneInc(self):
-        self.searcher.search_json(terms=["Muster", "GmbH"], allterms=False)
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Muster", "GmbH"], allterms=False)
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testJSONFindCompanyNameTwoTermsNoneInc(self):
-        self.searcher.search_json(terms=["Moster", "GmbH"], allterms=False)
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Moster", "GmbH"], allterms=False)
         output = self.out.getvalue()
         assert output == ""
 
     def testJSONFindCompanyNameFalseDataException(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=False)
+        self.searcher = Register_Searcher(jsonl="test.jsonl", ignore_exception=False)
         self.searcher._jsonl_db.close()
         self.searcher._jsonl_db = self.false_in_data
-        self.assertRaises(JSONDecodeError, self.searcher.search_json, {"terms": ["Muster"]})
+        with self.assertRaises(JSONDecodeError):
+            self.searcher.search(compare_mode=Compare_Mode.json, terms=["Muster"])
 
     def testJSONFindCompanyNameFalseDataIgnoreException(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
+        self.searcher = Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
         self.searcher._jsonl_db.close()
         self.searcher._jsonl_db = self.false_in_data
-        self.searcher.search_json(terms=["Muster"])
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Muster"])
         output = self.out.getvalue()
         assert output != "" and "Error" in output
 
     def testJSONNoTermPassed(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
+        self.searcher = Register_Searcher(jsonl="test.jsonl")
         self.searcher._jsonl_db.close()
         self.searcher._jsonl_db = self.false_in_data
-        self.searcher.search_json(terms=[])
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=[])
         output = self.out.getvalue()
         assert "Error" not in output and "No terms given" in output
 
     def testJSONEmptyFilePassed(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
+        self.searcher = Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
         self.searcher._jsonl_db.close()
         self.searcher._jsonl_db = StringIO("")
-        self.searcher.search_json(terms=["Empty"])
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Empty"])
         output = self.out.getvalue()
         assert "Error" not in output and output == ""
 
     def testJSONNoFileSet(self):
-        self.searcher = register_searcher.Register_Searcher()
-        self.searcher.search_json(terms=["NoFile"])
+        self.searcher = Register_Searcher()
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["NoFile"])
         output = self.out.getvalue()
         assert "Error" not in output and "File not set" in output
 
     def testJSONFindRegisteredAddress(self):
-        self.searcher.search_json(terms=["Musterstraße 1"])
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Musterstraße 1"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testJSONFindFederalState(self):
-        self.searcher.search_json(terms=["Musterstadtland"])
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Musterstadtland"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testJSONFindRegisteredOffice(self):
-        self.searcher.search_json(terms=["Musterstadt 1"])
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Musterstadt 1"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testJSONFindRegistrar(self):
-        self.searcher.search_json(terms=["Meisterstadt"])
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Meisterstadt"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testStringFindCompanyNamePos(self):
-        self.searcher.search_string(terms=["Muster"])
+        self.searcher.search(compare_mode=Compare_Mode.string, terms=["Muster"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testStringFindCompanyNameNeg(self):
-        self.searcher.search_string(terms=["Moster"])
+        self.searcher.search(compare_mode=Compare_Mode.string, terms=["Moster"])
         output = self.out.getvalue()
         assert output == ""
 
     def testStringFindCompanyNameTwoTermsPos(self):
-        self.searcher.search_string(terms=["Muster", "Co KG"], allterms=True)
+        self.searcher.search(compare_mode=Compare_Mode.string, terms=["Muster", "Co KG"], allterms=True)
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found all terms" in output
 
     def testStringFindCompanyNameTwoTermsNeg(self):
-        self.searcher.search_string(terms=["Muster", "GmbH"], allterms=True)
+        self.searcher.search(compare_mode=Compare_Mode.string, terms=["Muster", "GmbH"], allterms=True)
         output = self.out.getvalue()
         assert output == ""
 
     def testStringFindCompanyNameTwoTermsOneInc(self):
-        self.searcher.search_string(terms=["Muster", "GmbH"], allterms=False)
+        self.searcher.search(compare_mode=Compare_Mode.string, terms=["Muster", "GmbH"], allterms=False)
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testStringFindCompanyNameTwoTermsNoneInc(self):
-        self.searcher.search_string(terms=["Moster", "GmbH"], allterms=False)
+        self.searcher.search(compare_mode=Compare_Mode.string, terms=["Moster", "GmbH"], allterms=False)
         output = self.out.getvalue()
         assert output == ""
 
     def testStringFindCompanyNameFalseDataIgnoreException(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
+        self.searcher = Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
         self.searcher._jsonl_db.close()
         self.searcher._jsonl_db = self.false_in_data
-        self.searcher.search_string(terms=["Muster"])
+        self.searcher.search(compare_mode=Compare_Mode.string, terms=["Muster"])
         output = self.out.getvalue()
         assert output == ""
 
     def testStringNoTermPassed(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
+        self.searcher = Register_Searcher(jsonl="test.jsonl")
         self.searcher._jsonl_db.close()
         self.searcher._jsonl_db = self.false_in_data
-        self.searcher.search_string(terms=[])
+        self.searcher.search(compare_mode=Compare_Mode.string, terms=[])
         output = self.out.getvalue()
         assert "Error" not in output and "No terms given" in output
 
     def testStringEmptyFilePassed(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
+        self.searcher = Register_Searcher(jsonl="test.jsonl")
         self.searcher._jsonl_db.close()
         self.searcher._jsonl_db = StringIO("")
-        self.searcher.search_string(terms=["Empty"])
+        self.searcher.search(compare_mode=Compare_Mode.string, terms=["Empty"])
         output = self.out.getvalue()
         assert "Error" not in output and output == ""
 
     def testStringNoFileSet(self):
-        self.searcher = register_searcher.Register_Searcher()
-        self.searcher.search_string(terms=["NoFile"])
+        self.searcher = Register_Searcher()
+        self.searcher.search(compare_mode=Compare_Mode.string, terms=["NoFile"])
         output = self.out.getvalue()
         assert "Error" not in output and "File not set" in output
 
     def testRegexFindCompanyNamePos(self):
-        self.searcher.search_regex(terms=["Muster"])
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["Muster"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testRegexFindCompanyNameNeg(self):
-        self.searcher.search_regex(terms=["Moster"])
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["Moster"])
         output = self.out.getvalue()
         assert output == ""
 
     def testRegexFindCompanyNameTwoTermsPos(self):
-        self.searcher.search_regex(terms=["Muster", "Co KG"], allterms=True)
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["Muster", "Co KG"], allterms=True)
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found all terms" in output
 
     def testRegexFindCompanyNameTwoTermsNeg(self):
-        self.searcher.search_regex(terms=["Muster", "GmbH"], allterms=True)
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["Muster", "GmbH"], allterms=True)
         output = self.out.getvalue()
         assert output == ""
 
     def testRegexFindCompanyNameTwoTermsOneInc(self):
-        self.searcher.search_regex(terms=["Muster", "GmbH"], allterms=False)
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["Muster", "GmbH"], allterms=False)
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testRegexFindCompanyNameTwoTermsNoneInc(self):
-        self.searcher.search_regex(terms=["Moster", "GmbH"], allterms=False)
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["Moster", "GmbH"], allterms=False)
         output = self.out.getvalue()
         assert output == ""
 
     def testRegexFindCompanyNameFalseDataIgnoreException(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
+        self.searcher = Register_Searcher(jsonl="test.jsonl", ignore_exception=True)
         self.searcher._jsonl_db.close()
         self.searcher._jsonl_db = self.false_in_data
-        self.searcher.search_regex(terms=["Muster"])
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["Muster"])
         output = self.out.getvalue()
         assert "Error" not in output and output == ""
 
     def testRegexNoTermPassed(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
+        self.searcher = Register_Searcher(jsonl="test.jsonl")
         self.searcher._jsonl_db.close()
         self.searcher._jsonl_db = self.false_in_data
-        self.searcher.search_regex(terms=[])
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=[])
         output = self.out.getvalue()
         assert "Error" not in output and "No terms given" in output
 
     def testRegexEmptyFilePassed(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="test.jsonl")
+        self.searcher = Register_Searcher(jsonl="test.jsonl")
         self.searcher._jsonl_db.close()
         self.searcher._jsonl_db = StringIO("")
-        self.searcher.search_regex(terms=["Empty"])
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["Empty"])
         output = self.out.getvalue()
         assert "Error" not in output and output == ""
 
     def testRegexNoFileSet(self):
-        self.searcher = register_searcher.Register_Searcher()
-        self.searcher.search_regex(terms=["NoFile"])
+        self.searcher = Register_Searcher()
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["NoFile"])
         output = self.out.getvalue()
         assert "Error" not in output and "File not set" in output
 
     def testRegexFindCompanyNameIgnoreCasePos(self):
-        self.searcher.search_regex(terms=["MUster"], ignore_case=True)
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["MUster"], ignore_case=True)
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testRegexFindCompanyNameCaseSensativeNeg(self):
         #data contains 'Meisterstadt', which should not be found, if case is not ignored
-        self.searcher.search_regex(terms=["MEster"])
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["MEster"])
         output = self.out.getvalue()
         assert output == ""
 
     def testRegexFindCompanyNameCaseInsensativeNeg(self):
         #data contains 'Meisterstadt', which should not be found, if case is not ignored
-        self.searcher.search_regex(terms=["mEister"], ignore_case=True)
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["mEister"], ignore_case=True)
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testRegexFindCityActualRegex(self):
-        self.searcher.search_regex(terms=["M.*stadt"])
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["M.*stadt"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testRegexFindCityActualRegexCaseSensitive(self):
-        self.searcher.search_regex(terms=["M1337m.*MUS999999"], ignore_case=False)
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["M1337m.*MUS999999"], ignore_case=False)
         output = self.out.getvalue()
         assert output == ""
 
     def testFileSetNone(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl=None)
+        self.searcher = Register_Searcher(jsonl=None)
         assert self.searcher._jsonl_db is None
 
     def testFileSetNotExisting(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="")
+        self.searcher = Register_Searcher(jsonl="")
         assert self.searcher._jsonl_db is None
 
     def testFileSetEmpty(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="empty.jsonl")
+        self.searcher = Register_Searcher(jsonl="empty.jsonl")
         assert self.searcher._jsonl_db is None
 
     def testOffsetJSONZero(self):
-        self.searcher.search_string(terms=["Muster"])
+        self.searcher.search(compare_mode=Compare_Mode.string, terms=["Muster"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetJSONTooFar(self):
-        self.searcher.search_string(terms=["Muster"])
+        self.searcher.search(compare_mode=Compare_Mode.string, terms=["Muster"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetJSONPos(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
-        self.searcher.search_string(terms=["Muster"])
+        self.searcher = Register_Searcher(jsonl="multiline.jsonl", offset=1)
+        self.searcher.search(compare_mode=Compare_Mode.string, terms=["Muster"])
         output = self.out.getvalue()
         assert "Error" not in output and output == ""
 
     def testOffsetJSONNeg(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
-        self.searcher.search_string(terms=["Monster"])
+        self.searcher = Register_Searcher(jsonl="multiline.jsonl", offset=1)
+        self.searcher.search(compare_mode=Compare_Mode.string, terms=["Monster"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetStringZero(self):
-        self.searcher.search_json(terms=["Muster"])
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Muster"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetStringTooFar(self):
-        self.searcher.search_json(terms=["Muster"])
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Muster"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetStringPos(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
-        self.searcher.search_json(terms=["Muster"])
+        self.searcher = Register_Searcher(jsonl="multiline.jsonl", offset=1)
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Muster"])
         output = self.out.getvalue()
         assert "Error" not in output and output == ""
 
     def testOffsetStringNeg(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
-        self.searcher.search_json(terms=["Monster"])
+        self.searcher = Register_Searcher(jsonl="multiline.jsonl", offset=1)
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Monster"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetRegexZero(self):
-        self.searcher.search_regex(terms=["Muster"])
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["Muster"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetRegexTooFar(self):
-        self.searcher.search_regex(terms=["Muster"])
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["Muster"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetRegexPos(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
-        self.searcher.search_regex(terms=["Muster"])
+        self.searcher = Register_Searcher(jsonl="multiline.jsonl", offset=1)
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["Muster"])
         output = self.out.getvalue()
         assert "Error" not in output and output == ""
 
     def testOffsetRegexNeg(self):
-        self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
-        self.searcher.search_regex(terms=["Monster"])
+        self.searcher = Register_Searcher(jsonl="multiline.jsonl", offset=1)
+        self.searcher.search(compare_mode=Compare_Mode.regex, terms=["Monster"])
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 

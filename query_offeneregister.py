@@ -1,6 +1,6 @@
 import argparse
 import os
-import register_searcher
+from register_searcher import Register_Searcher, Compare_Mode
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
@@ -20,7 +20,7 @@ if __name__ == "__main__":
             print("file " + str(args.jsonl) + " not found")
         else:
             print("Searching for terms " + str(args.terms) + " in database " + str(args.jsonl))
-            reg_par = register_searcher.Register_Searcher(jsonl=args.jsonl, offset=args.offset)
-            if args.stringsearch: reg_par.search_string(terms=args.terms, allterms=args.allterms)
-            elif args.regexsearch: reg_par.search_regex(terms=args.terms, allterms=args.allterms, ignore_case=args.ignorecase)
-            else: reg_par.search_json(terms=args.terms, allterms=args.allterms)
+            reg_par = Register_Searcher(jsonl=args.jsonl, offset=args.offset)
+            if args.stringsearch: reg_par.search(compare_mode=Compare_Mode.string, terms=args.terms, allterms=args.allterms)
+            elif args.regexsearch: reg_par.search(compare_mode=Compare_Mode.regex, terms=args.terms, allterms=args.allterms, ignore_case=args.ignorecase)
+            else: reg_par.search(compare_mode=Compare_Mode.json, terms=args.terms, allterms=args.allterms)
