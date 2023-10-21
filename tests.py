@@ -68,7 +68,7 @@ class Test(unittest.TestCase):
     def testJSONFindCompanyNamePos(self):
         self.searcher.search_json(terms=["Muster"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testJSONFindCompanyNameNeg(self):
         self.searcher.search_json(terms=["Moster"])
@@ -78,7 +78,7 @@ class Test(unittest.TestCase):
     def testJSONFindCompanyNameTwoTermsPos(self):
         self.searcher.search_json(terms=["Muster", "Co KG"], allterms=True)
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found all terms" in output
 
     def testJSONFindCompanyNameTwoTermsNeg(self):
         self.searcher.search_json(terms=["Muster", "GmbH"], allterms=True)
@@ -88,7 +88,7 @@ class Test(unittest.TestCase):
     def testJSONFindCompanyNameTwoTermsOneInc(self):
         self.searcher.search_json(terms=["Muster", "GmbH"], allterms=False)
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testJSONFindCompanyNameTwoTermsNoneInc(self):
         self.searcher.search_json(terms=["Moster", "GmbH"], allterms=False)
@@ -134,27 +134,27 @@ class Test(unittest.TestCase):
     def testJSONFindRegisteredAddress(self):
         self.searcher.search_json(terms=["Musterstraße 1"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testJSONFindFederalState(self):
         self.searcher.search_json(terms=["Musterstadtland"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testJSONFindRegisteredOffice(self):
         self.searcher.search_json(terms=["Musterstadt 1"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testJSONFindRegistrar(self):
         self.searcher.search_json(terms=["Meisterstadt"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testStringFindCompanyNamePos(self):
         self.searcher.search_string(terms=["Muster"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testStringFindCompanyNameNeg(self):
         self.searcher.search_string(terms=["Moster"])
@@ -164,7 +164,7 @@ class Test(unittest.TestCase):
     def testStringFindCompanyNameTwoTermsPos(self):
         self.searcher.search_string(terms=["Muster", "Co KG"], allterms=True)
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found all terms" in output
 
     def testStringFindCompanyNameTwoTermsNeg(self):
         self.searcher.search_string(terms=["Muster", "GmbH"], allterms=True)
@@ -174,7 +174,7 @@ class Test(unittest.TestCase):
     def testStringFindCompanyNameTwoTermsOneInc(self):
         self.searcher.search_string(terms=["Muster", "GmbH"], allterms=False)
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testStringFindCompanyNameTwoTermsNoneInc(self):
         self.searcher.search_string(terms=["Moster", "GmbH"], allterms=False)
@@ -214,7 +214,7 @@ class Test(unittest.TestCase):
     def testRegexFindCompanyNamePos(self):
         self.searcher.search_regex(terms=["Muster"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testRegexFindCompanyNameNeg(self):
         self.searcher.search_regex(terms=["Moster"])
@@ -224,7 +224,7 @@ class Test(unittest.TestCase):
     def testRegexFindCompanyNameTwoTermsPos(self):
         self.searcher.search_regex(terms=["Muster", "Co KG"], allterms=True)
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found all terms" in output
 
     def testRegexFindCompanyNameTwoTermsNeg(self):
         self.searcher.search_regex(terms=["Muster", "GmbH"], allterms=True)
@@ -234,7 +234,7 @@ class Test(unittest.TestCase):
     def testRegexFindCompanyNameTwoTermsOneInc(self):
         self.searcher.search_regex(terms=["Muster", "GmbH"], allterms=False)
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testRegexFindCompanyNameTwoTermsNoneInc(self):
         self.searcher.search_regex(terms=["Moster", "GmbH"], allterms=False)
@@ -274,7 +274,7 @@ class Test(unittest.TestCase):
     def testRegexFindCompanyNameIgnoreCasePos(self):
         self.searcher.search_regex(terms=["MUster"], ignore_case=True)
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testRegexFindCompanyNameCaseSensativeNeg(self):
         #data contains 'Meisterstadt', which should not be found, if case is not ignored
@@ -286,12 +286,12 @@ class Test(unittest.TestCase):
         #data contains 'Meisterstadt', which should not be found, if case is not ignored
         self.searcher.search_regex(terms=["mEister"], ignore_case=True)
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testRegexFindCityActualRegex(self):
         self.searcher.search_regex(terms=["M.*stadt"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testRegexFindCityActualRegexCaseSensitive(self):
         self.searcher.search_regex(terms=["M1337m.*MUS999999"], ignore_case=False)
@@ -313,12 +313,12 @@ class Test(unittest.TestCase):
     def testOffsetJSONZero(self):
         self.searcher.search_string(terms=["Muster"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetJSONTooFar(self):
         self.searcher.search_string(terms=["Muster"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetJSONPos(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
@@ -330,17 +330,17 @@ class Test(unittest.TestCase):
         self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
         self.searcher.search_string(terms=["Monster"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetStringZero(self):
         self.searcher.search_json(terms=["Muster"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetStringTooFar(self):
         self.searcher.search_json(terms=["Muster"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetStringPos(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
@@ -352,17 +352,17 @@ class Test(unittest.TestCase):
         self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
         self.searcher.search_json(terms=["Monster"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetRegexZero(self):
         self.searcher.search_regex(terms=["Muster"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetRegexTooFar(self):
         self.searcher.search_regex(terms=["Muster"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
     def testOffsetRegexPos(self):
         self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
@@ -374,7 +374,7 @@ class Test(unittest.TestCase):
         self.searcher = register_searcher.Register_Searcher(jsonl="multiline.jsonl", offset=1)
         self.searcher.search_regex(terms=["Monster"])
         output = self.out.getvalue()
-        assert output != "" and "Error" not in output
+        assert output != "" and "Error" not in output and "Found term" in output
 
 if __name__ == "__main__":
     unittest.main()
