@@ -58,6 +58,7 @@ class Register_Searcher():
                 term_found = False
                 if (("name" in entry_data and t in entry_data["name"]) or
                     ("registered_address" in entry_data and t in entry_data["registered_address"]) or
+                    ("current_status" in entry_data and t in entry_data["current_status"]) or
                     ("all_attributes" in entry_data and "federal_state" in entry_data["all_attributes"] and t in entry_data["all_attributes"]["federal_state"]) or
                     ("all_attributes" in entry_data and "registered_office" in entry_data["all_attributes"] and t in entry_data["all_attributes"]["registered_office"]) or
                     ("all_attributes" in entry_data and "registrar" in entry_data["all_attributes"] and t in entry_data["all_attributes"]["registrar"])):

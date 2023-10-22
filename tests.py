@@ -152,6 +152,11 @@ class Test(unittest.TestCase):
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
+    def testJSONFindCurrentStatus(self):
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["registered"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output and "Found term" in output
+
     def testStringFindCompanyNamePos(self):
         self.searcher.search(compare_mode=Compare_Mode.string, terms=["Muster"])
         output = self.out.getvalue()
