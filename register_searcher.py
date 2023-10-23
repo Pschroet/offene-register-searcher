@@ -38,14 +38,13 @@ class Register_Searcher():
             for term in terms:
                 self.terms_regexes.append(re.compile("" + term + "", flags=re.IGNORECASE if "ignore_case" in kwargs and kwargs["ignore_case"] else 0))
         if any(terms) and self._jsonl_db is not None:
-            for entry in self._jsonl_db:
-                match compare_mode:
-                    case Compare_Mode.json:
-                        self._search_json(entry=entry, terms=terms, allterms=allterms)
-                    case Compare_Mode.string:
-                        self._search_string(entry=entry, terms=terms, allterms=allterms)
-                    case Compare_Mode.regex:
-                        self._search_regex(entry=entry, terms=terms, allterms=allterms)
+            match compare_mode:
+                case Compare_Mode.json:
+                    for entry in self._jsonl_db: self._search_json(entry=entry, terms=terms, allterms=allterms)
+                case Compare_Mode.string:
+                    for entry in self._jsonl_db: self._search_string(entry=entry, terms=terms, allterms=allterms)
+                case Compare_Mode.regex:
+                    for entry in self._jsonl_db: self._search_regex(entry=entry, terms=terms, allterms=allterms)
         else:
             if not any(terms): print("No terms given")
             if self._jsonl_db is None: print("File not set")
