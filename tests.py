@@ -382,5 +382,17 @@ class Test(unittest.TestCase):
         output = self.out.getvalue()
         assert output != "" and "Error" not in output and "Found term" in output
 
+    def testEndStringPos(self):
+        self.searcher = Register_Searcher(jsonl="multiline.jsonl", offset=1, end=1)
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Monster"])
+        output = self.out.getvalue()
+        assert "Error" not in output and "Found term" not in output and output == ""
+
+    def testEndStringNeg(self):
+        self.searcher = Register_Searcher(jsonl="multiline.jsonl", offset=1, end=0)
+        self.searcher.search(compare_mode=Compare_Mode.json, terms=["Monster"])
+        output = self.out.getvalue()
+        assert output != "" and "Error" not in output and "Found term" in output
+
 if __name__ == "__main__":
     unittest.main()
