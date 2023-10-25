@@ -20,8 +20,11 @@ if __name__ == "__main__":
         if not os.path.isfile(args.jsonl):
             print("file " + str(args.jsonl) + " not found")
         else:
-            print("Searching for terms " + str(args.terms) + " in database " + str(args.jsonl))
-            reg_par = Register_Searcher(jsonl=args.jsonl, offset=args.offset, end=args.end)
-            if args.stringsearch: reg_par.search(compare_mode=Compare_Mode.string, terms=args.terms, allterms=args.allterms)
-            elif args.regexsearch: reg_par.search(compare_mode=Compare_Mode.regex, terms=args.terms, allterms=args.allterms, ignore_case=args.ignorecase)
-            else: reg_par.search(compare_mode=Compare_Mode.json, terms=args.terms, allterms=args.allterms)
+            try:
+                print("Searching for terms " + str(args.terms) + " in database " + str(args.jsonl))
+                reg_par = Register_Searcher(jsonl=args.jsonl, offset=args.offset, end=args.end)
+                if args.stringsearch: reg_par.search(compare_mode=Compare_Mode.string, terms=args.terms, allterms=args.allterms)
+                elif args.regexsearch: reg_par.search(compare_mode=Compare_Mode.regex, terms=args.terms, allterms=args.allterms, ignore_case=args.ignorecase)
+                else: reg_par.search(compare_mode=Compare_Mode.json, terms=args.terms, allterms=args.allterms)
+            finally:
+                reg_par._jsonl_db.close()
