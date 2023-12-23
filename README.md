@@ -14,7 +14,7 @@ Default search method converts each entry from a JSON formatted string to a Pyth
 - -a/--allterms will make the script only return a set of data, if all terms appear in a set
 - -s/--stringsearch will treat each entry as string and search in there
 - -r/--regexsearch will convert the term(s) to regular expressions and use them to search the entries
-- -i/--ignorecase will make the regular expression case insensitive and is only used of -r/--regexsearch is active, otherwise has no effect
+- -i/--ignorecase will make the regular expression case insensitive and is only used if -r/--regexsearch is active, otherwise has no effect
 - -o/--offset will jump over the given number of lines
 - -e/--end will set the line the search stops before
 
