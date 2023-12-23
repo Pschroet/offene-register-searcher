@@ -6,7 +6,7 @@ Goes through a JSONL file and searches for given terms in the name of the compan
 Usage
 
 ```
-python3 query_offeneregister.py -j/--jsonl jsonl_file_location [-a/--alterms] [-s/--stringsearch | -r/--regexsearch [-i/--ignorecase]] [-o/--offset offset_nr] [-e/--end end_before_line] search_term [search_term ...]
+python3 query_offeneregister.py -j/--jsonl jsonl_file_location [-a/--allterms] [-s/--stringsearch | -r/--regexsearch [-i/--ignorecase]] [-o/--offset offset_nr] [-e/--end end_before_line] search_term [search_term ...]
 ```
 
 Default search method converts each entry from a JSON formatted string to a Python object and searches for the terms in the company name, the registered address, federal state, registered office, registrar, and attributes of the officers of the company.
